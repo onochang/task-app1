@@ -3,8 +3,19 @@
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
   </nav>
+  <fa :icon="['fas','leaf']"/>
+  <fa :icon="['far','clock']" />
   <router-view/>
 </template>
+
+<script>
+import 'normalize.css'
+
+export default {
+  name: "App",
+}
+
+</script>
 
 <style lang="scss">
 #app {
