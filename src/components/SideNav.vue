@@ -1,0 +1,78 @@
+<template>
+<div class="side-nav">
+    <div class="user">
+        <img src="../assets/cat.jpg" class="user__img">
+        <p class="user__name">ユーザー</p>
+    </div>
+    <nav>
+        <router-link to="/" class="side-nav__link">Home</router-link>
+        <router-link to="/form" class="side-nav__link">Add To Do</router-link>
+        <router-link to="/list" class="side-nav__link">To Do List</router-link>
+    </nav>
+</div>
+<div class="overlay"></div>
+</template>
+
+<script>
+export default {
+  name: 'SideNav',
+}
+</script>
+
+<style lang="scss" scoped>
+.side-nav{
+    background-color: #FFFFFF;
+    height: 100vh;
+    width: 50vw;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+
+    nav {
+        display: flex;
+        flex-flow: column;
+        row-gap: 28px;
+        padding-top: 28px;
+        padding-left: 20px;
+    }
+
+    &__link{
+        color: #221233;
+        column-gap: 28px;
+        font-size: 14px;
+        text-decoration: none;
+    }
+}
+
+.user {
+    height: 56px;
+    padding-left: 20px;
+    border-bottom: 1px solid rgba($color: #404040, $alpha: 0.5);
+    display: flex;
+    align-items: center;
+
+    &__img {
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    &__name{
+        color: #221233;
+        font-size: 14px;
+    }
+}
+
+.overlay {
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba($color: #221233, $alpha: 0.5);
+    z-index: 1;
+}
+
+</style>
