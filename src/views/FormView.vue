@@ -4,26 +4,50 @@
         <div class="form">
             <div class="form-to-do">
                 <label for="" class="form__label">To-do</label>
-                <input type="text" name="text" class="form-to-do__input">
+                <input v-model="task.title" type="text" name="text" class="form-to-do__input">
             </div>
             <div class="form-time-wrap">
                 <div class="form-time">
                     <label for="" class="form__label">Start-time</label>
-                    <input type="time" name="start" class="form-time__input" >
+                    <input v-model="task.start" type="time" name="start" class="form-time__input" >
                 </div>
                 <div class="form-time">
                     <label for="" class="form__label">End-time</label>
-                    <input type="time" name="end" class="form-time__input" >
+                    <input v-model="task.end" type="time" name="end" class="form-time__input" >
                 </div>
             </div>
-            <button class="submit" type="submit">OK</button>
+            <button @click="submit" class="submit" :class="{ disabled : nullCheck}" type="submit" :disabled="nullCheck">OK</button>
         </div>
     </div>  
 </template>
 
 <script>
+import { mapActions } from "vuex"
     export default{
-        name: 'FormView'
+        name: 'FormView',
+        data(){
+            return{
+                task: {
+                    title: '',
+                    start: '',
+                    end: ''
+                }
+            }
+        },
+        methods: {
+            submit(){
+                this.addTask(this.task)
+                this.$router.push({name: 'list'})
+                this.task = {}
+            },
+            ...mapActions(['addTask'])
+        },
+        computed: {
+            nullCheck(){
+                // title,start,endいずれかが空の場合nullCheckはtrueを返す
+                return this.task.title === '' || this.task.start === '' || this.task.end === ''
+            }
+        }
     }
 </script>
 
@@ -94,6 +118,10 @@ input[type="text"]:focus{
     display: block;
     height: 32px;
     width: 240px;
+
+    &.disabled {
+        opacity: 0.5;
+    }
 }
 
 

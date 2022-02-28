@@ -5,17 +5,21 @@
         <p class="user__name">ユーザー</p>
     </div>
     <nav>
-        <router-link to="/" class="side-nav__link">Home</router-link>
-        <router-link to="/form" class="side-nav__link">Add To Do</router-link>
-        <router-link to="/list" class="side-nav__link">To Do List</router-link>
+        <router-link to="/" class="side-nav__link" @click="toggleSideNav">Home</router-link>
+        <router-link to="/form" class="side-nav__link" @click="toggleSideNav">Add To Do</router-link>
+        <router-link to="/list" class="side-nav__link" @click="toggleSideNav">To Do List</router-link>
     </nav>
 </div>
-<div class="overlay"></div>
+<div class="overlay" @click="toggleSideNav"></div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   name: 'SideNav',
+  methods: {
+      ...mapActions(['toggleSideNav'])
+  }
 }
 </script>
 
