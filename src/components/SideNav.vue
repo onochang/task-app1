@@ -1,8 +1,10 @@
 <template>
 <div class="side-nav">
     <div class="user">
-        <img src="../assets/cat.jpg" class="user__img">
-        <p class="user__name">ユーザー</p>
+        <img v-if="photoURL" :src="photoURL" class="user__img">
+        <img v-else src="../assets/cat.jpg" class="user__img">
+        <p v-if="userName" class="user__name">{{ userName }}</p>
+        <p v-else class="user__name">ユーザー</p>
     </div>
     <nav>
         <router-link to="/" class="side-nav__link" @click="toggleSideNav">Home</router-link>
@@ -14,11 +16,15 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { mapActions } from 'vuex'
 export default {
   name: 'SideNav',
   methods: {
       ...mapActions(['toggleSideNav'])
+  },
+  computed: {
+      ...mapGetters(['userName','photoURL'])
   }
 }
 </script>

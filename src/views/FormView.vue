@@ -36,6 +36,7 @@ import { mapActions } from "vuex"
         },
         methods: {
             submit(){
+                // storeのtasksにtaskオブジェクトを格納
                 this.addTask(this.task)
                 this.$router.push({name: 'list'})
                 this.task = {}
