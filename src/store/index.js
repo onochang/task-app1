@@ -5,7 +5,7 @@ import { GoogleAuthProvider } from "firebase/auth";
 import { getAuth, signInWithRedirect, signOut } from "firebase/auth";
 // firestoreをimport
 import { getFirestore } from "firebase/firestore"
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs, doc, updateDoc,  deleteDoc } from "firebase/firestore";
 
 
 export default createStore({
@@ -18,6 +18,9 @@ export default createStore({
     userName: state => state.login_user ? state.login_user.displayName : '',
     photoURL: state => state.login_user ? state.login_user.photoURL : '',
     uid: state => state.login_user ? state.login_user.uid : '',
+    // stateのtasksの中からURLのパラメーターに一致するtaskを参照する。
+    getAddressById: state => id => state.tasks.find( task => task.id === id)
+
   },
   mutations: {
     setLoginUser(state, user) {
@@ -31,8 +34,20 @@ export default createStore({
       state.sideNav = !state.sideNav
     },
     // state内のtasksにtaskオブジェクトを格納
-    addTask(state, task) {
+    addTask(state, { id, task }) {
+      // taskオブジェクトにidを追加
+      task.id = id
       state.tasks.push(task)
+    },
+    updateTask(state, { id, task }) {
+      // 一致するタスクのインデックスを返す
+      const index = state.tasks.findIndex(task => task.id === id)
+      state.tasks[index] = task
+    },
+    deleteTask(state, id) {
+      // 削除するtaskのインデックスを取得
+      const index = state.tasks.findIndex(task => task.id === id)
+      state.tasks.splice(index, 1)
     }
   },
   actions: {
@@ -68,13 +83,44 @@ export default createStore({
       const db = getFirestore();
       try {
         if (getters.uid) {
+          // firestoreに接続してパスを参照してtaskを追加
           const docRef = await addDoc(collection(db, `users/${getters.uid}/tasks`), task);
-          console.log("Document written with ID: ", docRef.id); 
+          console.log("Document written with ID: ", docRef.id);
+          // addTaskにtaskのIDと内容を渡す
+          commit('addTask', { id: docRef.id,  task })
         }
       } catch (e) {
         console.error("Error adding document: ", e);
       }
-      commit('addTask', task)
+    },
+    async fetchTasks({ getters, commit }) {
+      // firestoreに接続
+      const db = getFirestore();
+      // firestoreからデータを取得
+      const querySnapshot = await getDocs(collection(db, `users/${getters.uid}/tasks`));
+      console.log(querySnapshot);
+      querySnapshot.forEach((doc) => {
+        // 取得した情報からtaskオブジェクトを取得してaddTaskに渡す
+        commit('addTask', { id: doc.id, task: doc.data() })
+        console.log(`${doc.id} => ${doc.data()}`);
+      });
+    },
+    async updateTask({ getters, commit }, { id, task }) {
+      const db = getFirestore();
+      // 編集中のtaskを参照
+      const editTask = doc(db, `users/${getters.uid}/tasks`, id);
+      // 取得したtaskを更新
+      await updateDoc(editTask, {
+        title: task.title,
+        start: task.start,
+        end: task.end
+      });
+      commit('updateTask',{id,task})
+    },
+    async deleteTask({ getters, commit }, id) {
+      const db = getFirestore();
+      await deleteDoc(doc(db, `users/${getters.uid}/tasks`, id));
+      commit('deleteTask', id)
     }
   },
   modules: {

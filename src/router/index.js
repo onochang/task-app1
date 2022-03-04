@@ -19,7 +19,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
   {
-    path: '/form',
+    path: '/form/:task_id?',
     name: 'form',
     component: FormView
   },

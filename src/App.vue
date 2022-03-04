@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     // storeのactionsを呼び出す
-    ...mapActions(['toggleSideNav','setLoginUser','logout','deleteLoginUser'])
+    ...mapActions(['toggleSideNav','setLoginUser','logout','deleteLoginUser','fetchTasks'])
   },
   created(){
     // Googleの認証状態を取得
@@ -33,6 +33,7 @@ export default {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         this.setLoginUser(user)
+        this.fetchTasks()
       } else {
         this.deleteLoginUser()
       }

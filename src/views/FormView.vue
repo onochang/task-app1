@@ -34,14 +34,33 @@ import { mapActions } from "vuex"
                 }
             }
         },
+        created(){
+            // パラメーターがなければ/formに遷移
+            if(!this.$route.params.task_id){
+                return
+            }
+            // storeのgetAddressByIdにURLのパラメーターを渡して呼び出す
+            const task = this.$store.getters.getAddressById(this.$route.params.task_id)
+            if(task){
+                // パラメーターに一致するtaskがあればフォームにデータを復元
+                this.task=task
+            } else {
+                // パラメーターに一致するtaskがなければlistに遷移
+                this.$router.push({ name: 'list'})
+            }
+        },
         methods: {
             submit(){
-                // storeのtasksにtaskオブジェクトを格納
-                this.addTask(this.task)
+                if(this.$route.params.task_id){
+                    this.updateTask({id:this.$route.params.task_id, task: this.task})
+                } else {
+                    // storeのtasksにtaskオブジェクトを格納
+                    this.addTask(this.task)
+                }
                 this.$router.push({name: 'list'})
                 this.task = {}
             },
-            ...mapActions(['addTask'])
+            ...mapActions(['addTask','updateTask'])
         },
         computed: {
             nullCheck(){
